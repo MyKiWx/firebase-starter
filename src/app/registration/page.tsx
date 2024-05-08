@@ -2,13 +2,15 @@
 
 import { db } from "@/firebase/config";
 import { addDoc, collection, doc, setDoc } from "firebase/firestore";
-import React from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 type Props = {};
 
 // PascalCase
 const Page = (props: Props) => {
+  const [isCheckETicketFirstMeet, setIsCheckETicketFirstMeet] =
+    useState<boolean>(true);
   const student = {
     std_id: "S123456",
     std_fullname: "John Doe",
@@ -108,19 +110,20 @@ const Page = (props: Props) => {
       },
     ];
 
-    setDoc(
-      doc(
-        db,
-        "students",
-        student_uuid.id,
-        "events_registration",
-        events[0].event_uuid
-      ),
-      {
-        event_code: uuidv4().split("-")[0],
-        isUsed: false,
-      }
-    );
+    isCheckETicketFirstMeet &&
+      setDoc(
+        doc(
+          db,
+          "students",
+          student_uuid.id,
+          "events_registration",
+          events[0].event_uuid
+        ),
+        {
+          event_code: uuidv4().split("-")[0],
+          isUsed: false,
+        }
+      );
 
     setDoc(
       doc(
@@ -159,6 +162,7 @@ const Page = (props: Props) => {
   return (
     <div>
       <h1>Registration</h1>
+      <Switch {...label} defaultChecked value />
       <button onClick={handleRegistration}>ลงทะเบียน</button>
     </div>
   );
